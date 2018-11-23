@@ -133,7 +133,6 @@ def find_path_astar(maze, start, goal):
     return "ERR;"
 
 
-
+application = bottle.default_app()
 if __name__ == '__main__':
-    application = bottle.default_app()
-    bottle.run(application, host=os.getenv('IP', '127.0.0.1'), port=os.getenv('PORT', '8080'))
+    bottle.run(application, host=os.getenv('IP', '0.0.0.0'), port=os.getenv('PORT', '8080'))
