@@ -16,7 +16,7 @@ def start():
 def move():
     data = PublicGameState(ext_dict=bottle.request.json)
     # TODO: Do things with data acces via data
-    return ReturnDirections.random()
+    return ReturnDirections.NORTH
 
 application = bottle.default_app()
 if __name__ == '__main__':
