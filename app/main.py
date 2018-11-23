@@ -9,7 +9,7 @@ from app.dto.ReturnDirections import ReturnDirections
 
 @bottle.post('/start')
 def start():
-    return "SomeFancyTeamName"
+    return "BlueTeam"
 
 
 @bottle.post('/chooseAction')
