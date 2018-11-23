@@ -3,7 +3,6 @@ import os
 import numpy as np
 from heapq import heappop, heappush
 from app.dto.PublicGameState import PublicGameState
-from app.dto.PublicPlayer import PublicPlayer
 from app.dto.ReturnDirections import ReturnDirections
 
 
@@ -16,7 +15,8 @@ player = 1
 
 @bottle.post('/start')
 def start():
-    return "BlauesTeam"
+    Counter.count = 0
+    return "STAIR"
 
 
 @bottle.post('/chooseAction')
@@ -33,6 +33,10 @@ def move():
     foodOnMap[foodOnMap != '°'] = 0
     foodOnMap[foodOnMap == '°'] = 1
     foodOnMap.astype(int)
+
+    if not data.publicPlayers[(player + 1) % 2]['isPacman']:
+        enemyPos = data.publicPlayers[(player + 1) % 2]['position']
+        playground[int(enemyPos[1]), int(enemyPos[0])] = True
 
     shape = foodOnMap.shape
     y = shape[0]
@@ -52,15 +56,24 @@ def move():
         if done:
             break
 
+    if not done:
+        if data.publicPlayers[(player+1)%2]['isPacman']:
+            enemyPos = data.publicPlayers[(player+1)%2]['position']
+            goto = (int(enemyPos[1]), int(enemyPos[0]))
+        elif data.publicPlayers[(player+1)%2]['weakened']:
+            enemyPos = data.publicPlayers[(player + 1) % 2]['position']
+            goto = (int(enemyPos[1]), int(enemyPos[0]))
+        else:
+            goto = (15, 32)
+    else:
+        goto = (i, j)
+
     playerPos = data.publicPlayers[player]['position']
     playerPos = (int(playerPos[1]), int(playerPos[0]))
-    goto = (i, j)
 
-    if (Counter.count > 200) and (Counter.count < 300):
+
+    if (Counter.count > 200) and (Counter.count < 250):
         goto = (15, 32)
-
-
-    # print (" Point on Map", foodOnMap[goto[0], goto[1]])
 
 
     pathStr = find_path_astar(playground, playerPos, goto)
