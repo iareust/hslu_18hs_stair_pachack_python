@@ -29,7 +29,7 @@ def move():
     foodOnMap[foodOnMap == '°'] = 1
     foodOnMap.astype(int)
 
-    if not data.publicPlayers[(player + 1) % 2]['isPacman']:
+    if not data.publicPlayers[(player + 1) % 2]['isPacman'] and (not data.publicPlayers[(player + 1) % 2]['weakened']):
         enemyPos = data.publicPlayers[(player + 1) % 2]['position']
         playground[int(enemyPos[1]), int(enemyPos[0])] = True
 
@@ -51,7 +51,7 @@ def move():
         if done:
             break
 
-    if data.publicPlayers[(player + 1) % 2]['isPacman']:
+    if data.publicPlayers[(player + 1) % 2]['isPacman'] and not data.publicPlayers[player]['weakened']:
         enemyPos = data.publicPlayers[(player + 1) % 2]['position']
         goto = (int(enemyPos[1]), int(enemyPos[0]))
     elif data.publicPlayers[(player + 1) % 2]['weakened']:
