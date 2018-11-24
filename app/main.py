@@ -6,8 +6,6 @@ from app.dto.PublicGameState import PublicGameState
 from app.dto.ReturnDirections import ReturnDirections
 
 
-class Counter:
-    count = 0
 
 
 alreadyVisited = np.zeros(1)
@@ -15,14 +13,11 @@ player = 1
 
 @bottle.post('/start')
 def start():
-    Counter.count = 0
     return "STAIR"
 
 
 @bottle.post('/chooseAction')
 def move():
-    Counter.count+=1
-    print (Counter.count)
     data = PublicGameState(ext_dict=bottle.request.json)
     playground = np.copy(data.gameField)
     playground[playground != '%'] = 0
@@ -56,24 +51,20 @@ def move():
         if done:
             break
 
-    if not done:
-        if data.publicPlayers[(player+1)%2]['isPacman']:
-            enemyPos = data.publicPlayers[(player+1)%2]['position']
-            goto = (int(enemyPos[1]), int(enemyPos[0]))
-        elif data.publicPlayers[(player+1)%2]['weakened']:
-            enemyPos = data.publicPlayers[(player + 1) % 2]['position']
-            goto = (int(enemyPos[1]), int(enemyPos[0]))
-        else:
-            goto = (15, 32)
+    if data.publicPlayers[(player + 1) % 2]['isPacman']:
+        enemyPos = data.publicPlayers[(player + 1) % 2]['position']
+        goto = (int(enemyPos[1]), int(enemyPos[0]))
+    elif data.publicPlayers[(player + 1) % 2]['weakened']:
+        enemyPos = data.publicPlayers[(player + 1) % 2]['position']
+        goto = (int(enemyPos[1]), int(enemyPos[0]))
+    elif not done:
+        goto = (15, 32)
     else:
         goto = (i, j)
 
+
     playerPos = data.publicPlayers[player]['position']
     playerPos = (int(playerPos[1]), int(playerPos[0]))
-
-
-    if (Counter.count > 200) and (Counter.count < 250):
-        goto = (15, 32)
 
 
     pathStr = find_path_astar(playground, playerPos, goto)
@@ -135,4 +126,4 @@ def find_path_astar(maze, start, goal):
 
 application = bottle.default_app()
 if __name__ == '__main__':
-    bottle.run(application, host=os.getenv('IP', '0.0.0.0'), port=os.getenv('PORT', '8080'))
+    bottle.run(application, host=os.getenv('IP', '127.0.0.1'), port=os.getenv('PORT', '8080'))
